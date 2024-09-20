@@ -1,0 +1,12 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Mag3DView.Views.UserControls"
+        x:Class="Mag3DView.Views.MainWindow"
+        Width="800" Height="450" Title="Mag3DView">
+	<StackPanel>
+		<!-- Your existing content -->
+
+		<!-- Reference to OpenGlControl -->
+		<local:OpenGlControl />
+	</StackPanel>
+</Window>
