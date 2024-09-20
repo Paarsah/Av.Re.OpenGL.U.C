@@ -1,6 +1,7 @@
 using Avalonia.Controls;
-using Avalonia.VisualTree;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+using System;
 
 namespace Mag3DView.Views.UserControls
 {
@@ -20,18 +21,18 @@ namespace Mag3DView.Views.UserControls
         public OpenGlControl()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
         }
 
-        // Initialize OpenGL when the control is attached to the visual tree
-        protected override void OnAttachedToVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
+        private void OnLoaded(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            base.OnAttachedToVisualTree(e);
             InitializeOpenGL();
         }
 
         private void InitializeOpenGL()
         {
-            // Create OpenGL context here if necessary
+            // Create OpenGL context manually
+            GL.ClearColor(0f, 0f, 0f, 1f); // Set clear color
             InitializeBuffers();
         }
 
@@ -49,6 +50,7 @@ namespace Mag3DView.Views.UserControls
 
             _shaderProgram = CreateShaderProgram();
             GL.UseProgram(_shaderProgram);
+
             GL.Enable(EnableCap.DepthTest);
         }
 
@@ -95,7 +97,6 @@ namespace Mag3DView.Views.UserControls
             GL.DrawArrays(PrimitiveType.Points, 0, 3);
         }
 
-        // Clean up resources when the control is detached
         protected override void OnDetachedFromVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
         {
             base.OnDetachedFromVisualTree(e);

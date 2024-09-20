@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Mag3DView.Views.UserControls.OpenGlControl">
-	<!-- Content of OpenGL control goes here -->
+             x:Class="Mag3DView.Views.UserControls.OpenGlControl"
+             Width="800" Height="600">
+	<Canvas x:Name="canvas" />
 </UserControl>
