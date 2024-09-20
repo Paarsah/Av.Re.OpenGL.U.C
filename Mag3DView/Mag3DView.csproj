@@ -22,5 +22,7 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0" />
     <PackageReference Include="OpenTK" Version="4.8.2" />
+    <PackageReference Include="OpenTK.Graphics" Version="4.8.2" />
+    <PackageReference Include="OpenTK.Mathematics" Version="4.8.2" />
   </ItemGroup>
 </Project>

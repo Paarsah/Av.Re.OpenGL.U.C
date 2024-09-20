@@ -1,6 +1,8 @@
 using Avalonia.Controls;
+using OpenTK;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
 using System;
 
 namespace Mag3DView.Views.UserControls
@@ -18,6 +20,8 @@ namespace Mag3DView.Views.UserControls
              0.0f,  0.5f, 0.0f  // Top vertex
         };
 
+        private GameWindow _gameWindow;
+
         public OpenGlControl()
         {
             InitializeComponent();
@@ -26,12 +30,24 @@ namespace Mag3DView.Views.UserControls
 
         private void OnLoaded(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            // Create OpenGL window with settings
+            var gameWindowSettings = GameWindowSettings.Default;
+            var nativeWindowSettings = new NativeWindowSettings()
+            {
+                Size = new OpenTK.Mathematics.Vector2i(800, 450), // Use Vector2i for size
+                Title = "OpenTK Window"
+            };
+
+            _gameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings);
+            _gameWindow.MakeCurrent(); // Make it current
+
             InitializeOpenGL();
+            _gameWindow.RenderFrame += OnRenderFrame; // Subscribe to render event
+            _gameWindow.Run(); // Start the rendering loop
         }
 
         private void InitializeOpenGL()
         {
-            // Create OpenGL context manually
             GL.ClearColor(0f, 0f, 0f, 1f); // Set clear color
             InitializeBuffers();
         }
@@ -89,12 +105,13 @@ namespace Mag3DView.Views.UserControls
             return shaderProgram;
         }
 
-        public void RenderFrame()
+        private void OnRenderFrame(FrameEventArgs e) // Updated the method signature
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vertexArrayObject);
             GL.DrawArrays(PrimitiveType.Points, 0, 3);
+            _gameWindow.SwapBuffers(); // Swap the buffers
         }
 
         protected override void OnDetachedFromVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
@@ -103,6 +120,7 @@ namespace Mag3DView.Views.UserControls
             GL.DeleteBuffer(_vertexBufferObject);
             GL.DeleteVertexArray(_vertexArrayObject);
             GL.DeleteProgram(_shaderProgram);
+            _gameWindow.Dispose(); // Dispose the OpenGL window
         }
     }
 }
