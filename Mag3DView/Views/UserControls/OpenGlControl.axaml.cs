@@ -33,7 +33,7 @@ namespace Mag3DView.Views.UserControls
             var gameWindowSettings = GameWindowSettings.Default;
             var nativeWindowSettings = new NativeWindowSettings()
             {
-                Size = new OpenTK.Mathematics.Vector2i((int)Bounds.Width, (int)Bounds.Height),
+                ClientSize = new OpenTK.Mathematics.Vector2i((int)Bounds.Width, (int)Bounds.Height), // Updated to ClientSize
                 Title = "OpenGL Control",
                 WindowBorder = WindowBorder.Hidden, // Hide the window border
                 StartVisible = true,
@@ -63,7 +63,7 @@ namespace Mag3DView.Views.UserControls
             _shaderProgram = CreateShaderProgram();
             GL.UseProgram(_shaderProgram);
 
-            GL.ClearColor(0f, 1f, 0.6f, 1f); // Black background
+            GL.ClearColor(0.2f, 0.8f, 0.6f, 1.0f); // Dark gray background
         }
 
         private int CreateShaderProgram()
@@ -113,6 +113,7 @@ namespace Mag3DView.Views.UserControls
 
             _gameWindow?.SwapBuffers(); // Swap OpenGL buffer
         }
+
         private void OnDetachedFromVisualTree(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
         {
             // Clean up OpenGL resources
