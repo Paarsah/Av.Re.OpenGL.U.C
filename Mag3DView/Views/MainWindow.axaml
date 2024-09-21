@@ -3,10 +3,11 @@
         xmlns:local="clr-namespace:Mag3DView.Views.UserControls"
         x:Class="Mag3DView.Views.MainWindow"
         Width="800" Height="450" Title="Mag3DView">
-	<StackPanel>
-		<!-- Your existing content -->
+	<Grid>
+		<!-- Add other controls, e.g., buttons, labels if needed -->
 
-		<!-- Reference to OpenGlControl -->
-		<local:OpenGlControl />
-	</StackPanel>
+		<!-- OpenGlControl integrated into the main window -->
+		<local:OpenGlControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+	</Grid>
 </Window>

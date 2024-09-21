@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -12,6 +11,7 @@ namespace Mag3DView.Views.UserControls
         private int _vertexBufferObject;
         private int _vertexArrayObject;
         private int _shaderProgram;
+        private GameWindow? _gameWindow;
 
         private readonly float[] _pointsVertex =
         {
@@ -20,39 +20,35 @@ namespace Mag3DView.Views.UserControls
              0.0f,  0.5f, 0.0f  // Top vertex
         };
 
-        private GameWindow _gameWindow;
-
         public OpenGlControl()
         {
             InitializeComponent();
-            Loaded += OnLoaded;
+            Loaded += OnLoaded; // Attach loaded event
+            DetachedFromVisualTree += OnDetachedFromVisualTree; // Attach cleanup event
         }
 
-        private void OnLoaded(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            // Create OpenGL window with settings
+            // Create OpenGL context
             var gameWindowSettings = GameWindowSettings.Default;
             var nativeWindowSettings = new NativeWindowSettings()
             {
-                Size = new OpenTK.Mathematics.Vector2i(800, 450), // Use Vector2i for size
-                Title = "OpenTK Window"
+                Size = new OpenTK.Mathematics.Vector2i((int)Bounds.Width, (int)Bounds.Height),
+                Title = "OpenGL Control",
+                WindowBorder = WindowBorder.Hidden, // Hide the window border
+                StartVisible = true,
+                IsEventDriven = false // Ensure it's running
             };
 
             _gameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings);
-            _gameWindow.MakeCurrent(); // Make it current
+            _gameWindow.MakeCurrent();
 
             InitializeOpenGL();
-            _gameWindow.RenderFrame += OnRenderFrame; // Subscribe to render event
-            _gameWindow.Run(); // Start the rendering loop
+            _gameWindow.RenderFrame += OnRenderFrame;
+            _gameWindow.Run();
         }
 
         private void InitializeOpenGL()
-        {
-            GL.ClearColor(0f, 0f, 0f, 1f); // Set clear color
-            InitializeBuffers();
-        }
-
-        private void InitializeBuffers()
         {
             _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -67,7 +63,7 @@ namespace Mag3DView.Views.UserControls
             _shaderProgram = CreateShaderProgram();
             GL.UseProgram(_shaderProgram);
 
-            GL.Enable(EnableCap.DepthTest);
+            GL.ClearColor(0f, 0f, 0f, 1f); // Black background
         }
 
         private int CreateShaderProgram()
@@ -105,22 +101,24 @@ namespace Mag3DView.Views.UserControls
             return shaderProgram;
         }
 
-        private void OnRenderFrame(FrameEventArgs e) // Updated the method signature
+        private void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vertexArrayObject);
             GL.DrawArrays(PrimitiveType.Points, 0, 3);
-            _gameWindow.SwapBuffers(); // Swap the buffers
+
+            _gameWindow?.SwapBuffers(); // Swap OpenGL buffer
         }
 
-        protected override void OnDetachedFromVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
+        private void OnDetachedFromVisualTree(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
         {
-            base.OnDetachedFromVisualTree(e);
+            // Clean up OpenGL resources
             GL.DeleteBuffer(_vertexBufferObject);
             GL.DeleteVertexArray(_vertexArrayObject);
             GL.DeleteProgram(_shaderProgram);
-            _gameWindow.Dispose(); // Dispose the OpenGL window
+            _gameWindow?.Close();
         }
     }
 }
