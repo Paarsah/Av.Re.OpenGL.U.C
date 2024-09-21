@@ -63,7 +63,7 @@ namespace Mag3DView.Views.UserControls
             _shaderProgram = CreateShaderProgram();
             GL.UseProgram(_shaderProgram);
 
-            GL.ClearColor(0f, 0f, 0f, 1f); // Black background
+            GL.ClearColor(0f, 1f, 0.6f, 1f); // Black background
         }
 
         private int CreateShaderProgram()
@@ -107,11 +107,12 @@ namespace Mag3DView.Views.UserControls
 
             GL.UseProgram(_shaderProgram);
             GL.BindVertexArray(_vertexArrayObject);
+
+            GL.PointSize(10.0f); // Set point size to 10
             GL.DrawArrays(PrimitiveType.Points, 0, 3);
 
             _gameWindow?.SwapBuffers(); // Swap OpenGL buffer
         }
-
         private void OnDetachedFromVisualTree(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
         {
             // Clean up OpenGL resources
